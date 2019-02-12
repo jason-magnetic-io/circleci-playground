@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 defaults: &defaults
   docker:
     - image: circleci/python:3.7.2
@@ -13,7 +13,7 @@ jobs:
             echo ${CIRCLE_TAG}
 
 workflows:
-  version: 2.1
+  version: 2
   publish-version:
     jobs:
       - echo-tag:
