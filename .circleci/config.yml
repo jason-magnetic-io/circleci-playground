@@ -16,7 +16,7 @@ workflows:
   version: 2.1
   publish-version:
     jobs:
-      - echo-tag
+      - echo-tag:
           filters:
             branches:
               only: master
