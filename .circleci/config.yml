@@ -1,0 +1,24 @@
+version: 2
+defaults: &defaults
+  docker:
+    - image: circleci/python:3.7.2
+jobs:
+  echo-tag:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Echo GH tag
+          command: |
+            echo ${CIRCLE_TAG}
+
+workflows:
+  version: 2.1
+  publish-version:
+    jobs:
+      - echo-tag
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /^v.*/
