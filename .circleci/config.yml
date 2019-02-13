@@ -19,7 +19,7 @@ jobs:
       - run:
           name: clone repo
           command: |
-            git clone https://github.com/magneticio/vamp-kmt-examples.git .
+            git clone https://github.com/magneticio/vamp-kmt-examples.git repo-test
             ls -la
 
 workflows:
