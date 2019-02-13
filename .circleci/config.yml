@@ -16,6 +16,11 @@ jobs:
             docker build -t $DOCKER_ORG/circleci-playground:$tag .
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker push $DOCKER_ORG/circleci-playground:$tag
+      - run:
+          name: clone repo
+          command: |
+            git clone https://github.com/magneticio/vamp-kmt-examples.git .
+            ls -la
 
 workflows:
   version: 2
