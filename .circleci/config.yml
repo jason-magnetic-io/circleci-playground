@@ -17,10 +17,16 @@ jobs:
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker push $DOCKER_ORG/circleci-playground:$tag
       - run:
-          name: clone repo
+          name: Clone repo
           command: |
-            git clone https://github.com/magneticio/vamp-kmt-examples.git repo-test
+            git clone https://github.com/magneticio/vamp-kmt-examples.git
             ls -la
+      - run:
+          name: Update service def with new version
+          command: |
+            service_def=vamp-kmt-examples/tutorial5/services/sava-product/sava-product.json
+            vamp-kmt-examples/circleci/version-update/update_version.py -f $service_def -t $tag
+            cat $service_def
 
 workflows:
   version: 2
