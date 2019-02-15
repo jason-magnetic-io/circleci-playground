@@ -20,7 +20,6 @@ jobs:
           name: Clone repo
           command: |
             git clone https://github.com/jason-magnetic-io/vamp-kmt-examples.git
-            cd vamp-kmt-examples
       - run:
           name: Update service def with new version
           command: |
@@ -32,8 +31,9 @@ jobs:
           name: Push new version
           command: |
             tag="${CIRCLE_TAG:1}"
+            cd vamp-kmt-examples
             git add .
-            git commit -m "Added version " + $tag
+            git commit -m "Added version ${tag}"
             git push
 
 workflows:
