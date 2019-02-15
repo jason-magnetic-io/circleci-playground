@@ -27,7 +27,7 @@ jobs:
           name: Update service def with new version
           command: |
             service_def=vamp-kmt-examples/tutorial5/services/sava-product/sava-product.json
-            vamp-kmt-examples/circleci/version-update/update_version.py -f $service_def -t $tag
+            python3 vamp-kmt-examples/circleci/version-update/update_version.py -f $service_def -t $tag
             cat $service_def
 
 workflows:
