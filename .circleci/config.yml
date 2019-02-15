@@ -20,8 +20,9 @@ jobs:
           name: Clone repo
           command: |
             git clone https://github.com/magneticio/vamp-kmt-examples.git
+            cd vamp-kmt-examples
             git checkout feature/VE-564
-            ls -la vamp-kmt-examples
+            ls -la
       - run:
           name: Update service def with new version
           command: |
