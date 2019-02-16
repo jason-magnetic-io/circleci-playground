@@ -29,6 +29,7 @@ jobs:
             cat $service_def
       - run:
           name: Configure git
+          command: |
             git config user.email "jason@magnetic.io"
             git config user.name "circleci"
       - add_ssh_keys:
