@@ -28,6 +28,13 @@ jobs:
             python3 vamp-kmt-examples/circleci/version-update/update_version.py -f $service_def -t $tag
             cat $service_def
       - run:
+          name: Configure git
+            git config user.email "jason@magnetic.io"
+            git config user.name "circleci"
+      - add_ssh_keys:
+          fingerprints:
+            - "68:e9:39:38:a9:73:a7:bd:05:dc:20:4e:a5:e2:9a:1c"
+      - run:
           name: Push new version
           command: |
             tag="${CIRCLE_TAG:1}"
