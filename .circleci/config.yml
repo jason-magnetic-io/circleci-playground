@@ -33,7 +33,7 @@ jobs:
       - run:
           name: Update service def with new version
           command: |
-            service=$CIRCLE_PROJECT_REPONAME
+            service=sava-product
             tag="${CIRCLE_TAG:1}"
             service_def=vamp-kmt-examples/tutorial5/services/$service/$service.json
             python3 vamp-kmt-examples/circleci/version-update/update_version.py -f $service_def -t $tag
