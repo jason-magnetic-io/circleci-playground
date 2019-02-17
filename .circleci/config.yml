@@ -7,15 +7,20 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "68:e9:39:38:a9:73:a7:bd:05:dc:20:4e:a5:e2:9a:1c"
       - setup_remote_docker:
-          docker_layer_caching:
+          docker_layer_caching: true
       - run:
           name: Build Docker image with GH tag as tag
           command: |
-            tag="${CIRCLE_TAG:1}"
-            docker build -t $DOCKER_ORG/circleci-playground:$tag .
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push $DOCKER_ORG/circleci-playground:$tag
+            if [ ! -z ${DOCKER_PUBLISH_IMAGE+x} ]; then 
+              tag="${CIRCLE_TAG:1}"
+              docker build -t $DOCKER_ORG/circleci-playground:$tag .
+              docker login -u $DOCKER_USER -p $DOCKER_PASS
+              docker push $DOCKER_ORG/circleci-playground:$tag
+            fi
       - run:
           name: Clone repo
           command: |
@@ -27,16 +32,14 @@ jobs:
             tag="${CIRCLE_TAG:1}"
             python3 vamp-kmt-examples/circleci/version-update/update_version.py -f $service_def -t $tag
             cat $service_def
-      - add_ssh_keys:
-          fingerprints:
-            - "68:e9:39:38:a9:73:a7:bd:05:dc:20:4e:a5:e2:9a:1c"
       - run:
           name: Push new version
           command: |
             tag="${CIRCLE_TAG:1}"
             cd vamp-kmt-examples
-            git config user.email "jason@magnetic.io"
-            git config user.name "circleci"
+            git config user.email "${GITHUB_EMAIL}"
+            echo "${CIRCLE_USERNAME}"
+            git config user.name "${CIRCLE_USERNAME}"
             git add .
             git commit -m "Added version ${tag}"
             git push
