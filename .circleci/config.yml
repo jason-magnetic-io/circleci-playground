@@ -22,7 +22,7 @@ jobs:
               docker push $DOCKER_ORG/circleci-playground:$tag
             fi
       - run:
-          name: Clone repo
+          name: Clone vamp-kmt-examples
           command: |
             git clone https://github.com/jason-magnetic-io/vamp-kmt-examples.git
       - run:
