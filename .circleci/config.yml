@@ -12,11 +12,12 @@ jobs:
       - run:
           name: Build and push Docker image tagged with GH tag
           command: |
-            if [ ! -z ${DOCKER_PUBLISH_IMAGE+x} ]; then 
+            if [ ! -z ${DOCKER_PUBLISH_IMAGE+x} ]; then
+              service=$CIRCLE_PROJECT_REPONAME
               tag="${CIRCLE_TAG:1}"
-              docker build -t $DOCKER_ORG/circleci-playground:$tag .
+              docker build -t $DOCKER_ORG/$service:$tag .
               docker login -u $DOCKER_USER -p $DOCKER_PASS
-              docker push $DOCKER_ORG/circleci-playground:$tag
+              docker push $DOCKER_ORG/$service:$tag
             fi
   update-service-def:
     <<: *defaults
@@ -28,12 +29,13 @@ jobs:
       - run:
           name: Clone vamp-kmt-examples
           command: |
-            git clone https://github.com/jason-magnetic-io/vamp-kmt-examples.git
+            git clone https://github.com/$CIRCLE_PROJECT_USERNAME/vamp-kmt-examples.git
       - run:
           name: Update service def with new version
           command: |
-            service_def=vamp-kmt-examples/tutorial5/services/sava-product/sava-product.json
+            service=$CIRCLE_PROJECT_REPONAME
             tag="${CIRCLE_TAG:1}"
+            service_def=vamp-kmt-examples/tutorial5/services/$service/$service.json
             python3 vamp-kmt-examples/circleci/version-update/update_version.py -f $service_def -t $tag
             cat $service_def
       - run:
