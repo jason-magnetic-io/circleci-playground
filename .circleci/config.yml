@@ -21,6 +21,7 @@ jobs:
   update-service-def:
     <<: *defaults
     steps:
+      - checkout
       - add_ssh_keys:
           fingerprints:
             - "68:e9:39:38:a9:73:a7:bd:05:dc:20:4e:a5:e2:9a:1c"
