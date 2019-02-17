@@ -3,17 +3,14 @@ defaults: &defaults
   docker:
     - image: circleci/python:3.7-node
 jobs:
-  build-image:
+  build-push-image:
     <<: *defaults
     steps:
       - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - "68:e9:39:38:a9:73:a7:bd:05:dc:20:4e:a5:e2:9a:1c"
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
-          name: Build Docker image with GH tag as tag
+          name: Build and push Docker image tagged with GH tag
           command: |
             if [ ! -z ${DOCKER_PUBLISH_IMAGE+x} ]; then 
               tag="${CIRCLE_TAG:1}"
@@ -21,6 +18,12 @@ jobs:
               docker login -u $DOCKER_USER -p $DOCKER_PASS
               docker push $DOCKER_ORG/circleci-playground:$tag
             fi
+  update-service-def:
+    <<: *defaults
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "68:e9:39:38:a9:73:a7:bd:05:dc:20:4e:a5:e2:9a:1c"
       - run:
           name: Clone vamp-kmt-examples
           command: |
@@ -48,7 +51,13 @@ workflows:
   version: 2
   publish-version:
     jobs:
-      - build-image:
+      - build-push-image:
+          filters:
+            tags:
+              only: /^v.*/
+      - update-service-def:
+          requires:
+          - build-push-image
           filters:
             branches:
               ignore: /.*/
