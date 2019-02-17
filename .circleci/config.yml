@@ -53,6 +53,8 @@ workflows:
     jobs:
       - build-push-image:
           filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /^v.*/
       - update-service-def:
