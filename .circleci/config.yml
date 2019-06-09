@@ -1,7 +1,7 @@
 version: 2.1
 defaults: &defaults
   docker:
-    - image: vampio/kmt:circleci-0.1.0
+    - image: vampio/kmt:circleci-latest
 jobs:
   build-push-image:
     <<: *defaults
@@ -19,50 +19,23 @@ jobs:
               docker login -u $DOCKER_USER -p $DOCKER_PASS
               docker push $DOCKER_ORG/$service:$tag
             fi
-  update-service-def:
+  update-rp-sava-cart-204-pt-prod:
     <<: *defaults
     steps:
       - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - "68:e9:39:38:a9:73:a7:bd:05:dc:20:4e:a5:e2:9a:1c"
       - run:
-          name: Clone vamp-kmt-examples
+          name: Update sava-cart-2.0.4 with pt-production finished
           command: |
-            git clone https://github.com/$CIRCLE_PROJECT_USERNAME/vamp-kmt-examples.git
-      - run:
-          name: Update service def with new version
-          command: |
-            service=sava-product
-            tag="${CIRCLE_TAG:1}"
-            service_def=vamp-kmt-examples/tutorial5/services/$service/$service.json
-            python3 vamp-kmt-examples/circleci/version-update/update_version.py -f $service_def -t $tag
-            cat $service_def
-      - run:
-          name: Push new version
-          command: |
-            tag="${CIRCLE_TAG:1}"
-            cd vamp-kmt-examples
-            git config user.email "${GITHUB_EMAIL}"
-            echo "${CIRCLE_USERNAME}"
-            git config user.name "${CIRCLE_USERNAME}"
-            git add .
-            git commit -m "Added version ${tag}"
-            git push
+            python3 bin/update-release-plan.py \
+              --release-plan release-plans/sava-cart-2.0.4.json \
+              --environment-name pt-production \
+              --release-status finished
 
 workflows:
   version: 2
   publish-version:
     jobs:
       - build-push-image:
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
-      - update-service-def:
-          requires:
-          - build-push-image
           filters:
             branches:
               ignore: /.*/
